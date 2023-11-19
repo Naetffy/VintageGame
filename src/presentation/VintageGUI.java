@@ -9,7 +9,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class VintageGUI extends JFrame{
 	
-	private final Color backGroundColor = new Color(106, 90, 205);
+	private Color backGroundColor = new Color(106, 90, 205);
 	private static final  Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	private static final int WIDTH = screenSize.width/2;
     private static final int HIGH =  screenSize.height/2;
@@ -23,6 +23,7 @@ public class VintageGUI extends JFrame{
     private JMenuItem menuNew;
     private JMenuItem menuOpen;
     private JMenuItem menuSave;
+    private JMenuItem menuChangeColor;
     private JMenuItem menuClose;
     
     //Pantalla principal
@@ -74,11 +75,13 @@ public class VintageGUI extends JFrame{
 		menuNew = new JMenuItem("New");
 		menuOpen = new JMenuItem("Open");
 		menuSave = new JMenuItem("Save");
+		menuChangeColor = new JMenuItem("Change background color");
 		menuClose = new JMenuItem("Close");
 		
 		gameMenu.add(menuNew);
 		gameMenu.add(menuOpen);
 		gameMenu.add(menuSave);
+		gameMenu.add(menuChangeColor);
 		gameMenu.addSeparator();
 		gameMenu.add(menuClose);
 		
@@ -104,6 +107,8 @@ public class VintageGUI extends JFrame{
 		panelGamer1 = new JPanel();
 		panelGamer2 = new JPanel();
 		panelBoard = new JPanel();
+		sizeButton=false;
+		lastMove=false;
 		board.add(panelBoard, BorderLayout.CENTER);
 		board.add(panelGamer1, BorderLayout.NORTH);
 		board.add(panelGamer2, BorderLayout.SOUTH);
@@ -126,8 +131,7 @@ public class VintageGUI extends JFrame{
 		panelBoard.setBorder(border);
 		panelBoard.setLayout(new GridLayout(vintage.size,vintage.size,5,5));
 		boxes = new JButton[vintage.size][vintage.size];
-		sizeButton=false;
-		lastMove=false;
+		
 		for (int i = 0; i < vintage.size ; i++) {
 		    for (int j = 0; j < vintage.size ; j++) {
 		    	boxes[i][j] = new JButton();
@@ -136,7 +140,6 @@ public class VintageGUI extends JFrame{
 		    	int x = i; int y = j;
 		    	if (!sizeButton) {
 		    		SwingUtilities.invokeLater(() -> {
-		    			System.out.println(boxes[x][y].getWidth()+" "+boxes[x][y].getHeight());
 		    			recalculatePicturesSize(boxes[x][y].getWidth(),boxes[x][y].getHeight());});
 		    		sizeButton=true;
 		    	} 
@@ -224,6 +227,15 @@ public class VintageGUI extends JFrame{
 				 }
 			 }
 		 });
+		 menuChangeColor.addActionListener(new ActionListener() {
+			 public void actionPerformed(ActionEvent e) {
+				 	JColorChooser jC = new JColorChooser(); 
+					Color newColor = jC.showDialog(null, "Chose background color", backGroundColor);
+					if (newColor != null)backGroundColor = newColor;
+					getJMenuBar().setBackground(backGroundColor);
+					refresh();
+				 }
+		 });
 		 menuClose.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
 				 closeApp();
@@ -297,6 +309,11 @@ public class VintageGUI extends JFrame{
 		
 	}
 	private void updateBoard() {
+		if(vintage.verifyWinner()) {
+			String winner=vintage.getWinner();
+			if (winner==null) JOptionPane.showMessageDialog(null, "It was a draw");
+			else JOptionPane.showMessageDialog(null, "The winner was:  "+winner);
+		}
 		/*
 		 * while (!vintage.nextStates.isEmpty()) {
 			int[][] gameStatus = vintage.nextStates.poll();
@@ -335,6 +352,14 @@ public class VintageGUI extends JFrame{
 		panelGamer2.remove(score2);
 		score2 = new JLabel("Score player two: "+vintage.player2Score);
 		panelGamer2.add(score2);
+		if (vintage.getTurn()) {
+			panelGamer1.setBackground(getLightColor(backGroundColor,60));
+			panelGamer2.setBackground(backGroundColor);
+		}
+		else {
+			panelGamer1.setBackground(backGroundColor);
+			panelGamer2.setBackground(getLightColor(backGroundColor,60));
+		}
 	}
 	
 	private void closeApp() {
@@ -348,6 +373,13 @@ public class VintageGUI extends JFrame{
 			System.exit(0);
 		}
 	}
+	public static Color getLightColor(Color colorOriginal, int factorAclarado) {
+        int red = Math.min(255, colorOriginal.getRed() + factorAclarado);
+        int green = Math.min(255, colorOriginal.getGreen() + factorAclarado);
+        int blue = Math.min(255, colorOriginal.getBlue() + factorAclarado);
+
+        return new Color(red, green, blue);
+    }
 
 	private void recalculatePicturesSize(int w, int h) {
 		for(int i = 0; i < Vintage.numGems;i++) {

@@ -30,12 +30,24 @@ public class Vintage implements Serializable{
 	public Vintage(int n,String player1, String player2) {
 		size = n;
 		init(n);
-		if (player1.length()==0)player1 = "Player1";
-		if (player2.length()==0)player2 = "Player2";
+		if (player1 == null || player1.length()==0)player1 = "Player1";
+		if (player2 == null || player2.length()==0)player2 = "Player2";
 		this.player1 = player1;
 		this.player2 = player2;
 	}
-
+	public String getWinner() {
+		if(player1Score > player2Score)return player1;
+		else if(player1Score < player2Score)return player2;
+		else return null;
+	}
+	public boolean verifyWinner() {
+		for(int i = 0;i < size;i++) {
+			for(int j = 0;j < size; j++) {
+				if (!visited[i][j])return false;
+			}
+		}
+		return true;
+	}
 	
 	public boolean play(int[]first,int[]second) {
 		boolean valid=false;
@@ -187,7 +199,10 @@ public class Vintage implements Serializable{
 	public boolean[][] getVisited() {
 		return visited;
 	}
-
+	
+	public boolean getTurn() {
+		return turn;
+	}
 
 	public void guardarPartida(String nombreArchivo) {
 	    ObjectOutputStream salida = null;
