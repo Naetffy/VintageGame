@@ -6,12 +6,19 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value="System"/>
+		<item key="selection" value="print"/>
 		<list key="findhistory">
+			<item value="print"/>
+			<item value="AbstractQueue"/>
+			<item value="refresh"/>
+			<item value="panelElements"/>
+			<item value="prepareElementsBoardGameGamer1()"/>
+			<item value="System.out"/>
 			<item value="System"/>
 			<item value="updatePanel"/>
 		</list>
 		<list key="replacehistory">
+			<item value="LinkedList"/>
 			<item value="refresh"/>
 		</list>
 	</section>
