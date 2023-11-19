@@ -58,12 +58,13 @@ public class VintageGUI extends JFrame{
         int x = (screenSize.width - WIDTH)/2;
         int y = (screenSize.height - HIGH)/2;
         setLocation(x,y);
-        
-        setLayout(new BorderLayout());
-        setJMenuBar(prepareElementsMenu());
-        panelElements = prepareElementsBoard();
-        getContentPane().add(panelElements);
-        
+        pictures = new ImageIcon[Vintage.numGems];
+		for (int i = 0; i < Vintage.numGems;i++) {
+			String name = i+".png";
+			pictures[i] = new ImageIcon("src/resources/images/"+name);
+		}
+        setJMenuBar(prepareElementsMenu());   
+        prepareElementsBoard();
 	}
 	
 	private JMenuBar prepareElementsMenu() {
@@ -88,21 +89,26 @@ public class VintageGUI extends JFrame{
 		
 	}
 	
-	private JPanel prepareElementsBoard() {
-		pictures = new ImageIcon[Vintage.numGems];
-		for (int i = 0; i < Vintage.numGems;i++) {
-			String name = i+".png";
-			pictures[i] = new ImageIcon("src/resources/images/"+name);
-		}
+	private void prepareElementsBoard() {
 		JPanel board =  new JPanel();
 		board.setLayout(new BorderLayout());
 		prepareElementsBoardStart();
+		board.add(panelBoard, BorderLayout.CENTER);
+		panelElements = board;
+		getContentPane().add(panelElements);
+	}
+	private void prepareElementsBoardInGame() {
+		getContentPane().removeAll();
+		JPanel board =  new JPanel();
+		board.setLayout(new BorderLayout());
 		panelGamer1 = new JPanel();
 		panelGamer2 = new JPanel();
+		panelBoard = new JPanel();
 		board.add(panelBoard, BorderLayout.CENTER);
 		board.add(panelGamer1, BorderLayout.NORTH);
 		board.add(panelGamer2, BorderLayout.SOUTH);
-		return board;
+		panelElements = board;
+		getContentPane().add(panelElements);
 	}
 	
 	private void prepareElementsBoardStart() {
@@ -174,13 +180,17 @@ public class VintageGUI extends JFrame{
 	private void prepareMenuActions() {
 		menuNew.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
-				 String sizeS = JOptionPane.showInputDialog(null,"Give me the size of the game board");
-				 Integer size = 0;
-				 try {size = Integer.parseInt(sizeS);}catch(Exception ex) {System.out.println(ex.getMessage());}
+				 String size = JOptionPane.showInputDialog(null,"Give me the size of the game board");
 				 String player1 = JOptionPane.showInputDialog(null,"Name player one: ");
 				 String player2 = JOptionPane.showInputDialog(null,"Name player two: ");
-				 vintage = new Vintage(size,player1,player2);
-				 updatePanel();
+				 try {
+					 vintage = new Vintage(Integer.parseInt(size),player1,player2);
+				 }
+				 catch(Exception ex) {
+					 vintage = new Vintage(8,player1,player2);
+				 }
+				 prepareElementsBoardInGame();
+				 refresh();
 			 }
 		 });
 		menuSave.addActionListener(new ActionListener() {
@@ -210,7 +220,7 @@ public class VintageGUI extends JFrame{
 							 		 "You are trying to open the file with the next name: " 
 									 + chooser.getSelectedFile().getName());
 					 vintage = vintage.cargarPartida(chooser.getSelectedFile().getAbsolutePath());
-					 updatePanel();
+					 refresh();
 				 }
 			 }
 		 });
@@ -221,7 +231,7 @@ public class VintageGUI extends JFrame{
 		 });
 	}
 	
-	private void updatePanel() {
+	private void refresh() {
 		prepareElementsBoardGameGamer1();
 		prepareElementsBoardGameGamer2();
 		prepareElementsBoardGame();
@@ -238,9 +248,14 @@ public class VintageGUI extends JFrame{
 				 String size = JOptionPane.showInputDialog(null,"Give me the size of the game board");
 				 String player1 = JOptionPane.showInputDialog(null,"Name player one: ");
 				 String player2 = JOptionPane.showInputDialog(null,"Name player two: ");
-				 vintage = new Vintage(Integer.parseInt(size),player1,player2);
-				 updatePanel();
-				 
+				 try {
+					 vintage = new Vintage(Integer.parseInt(size),player1,player2);
+				 }
+				 catch(Exception ex) {
+					 vintage = new Vintage(8,player1,player2);
+				 }
+				 prepareElementsBoardInGame();
+				 refresh();
 			 }
 		 });
 		
@@ -282,14 +297,36 @@ public class VintageGUI extends JFrame{
 		
 	}
 	private void updateBoard() {
+		/*
+		 * while (!vintage.nextStates.isEmpty()) {
+			int[][] gameStatus = vintage.nextStates.poll();
+			for (int i = 0; i < vintage.size ; i++) {
+			    for (int j = 0; j < vintage.size ; j++) {
+			    	System.out.print(gameStatus[i][j]+" ");
+			    	boxes[i][j].setIcon(null);
+			    	boxes[i][j].setIcon(pictures[gameStatus[i][j]]);
+			    }System.out.println();	
+			}
+			System.out.println();
+			SwingUtilities.invokeLater(() -> {
+				 panelElements.revalidate();
+				 panelElements.repaint();
+			});
+			try {
+	            Thread.sleep(100);
+	            
+	        } catch (InterruptedException e) {
+	            e.printStackTrace();
+	        }
+		}*/
 		int[][] gameStatus = vintage.getState();
 		boolean[][] gameWin = vintage.getVisited();
 		for (int i = 0; i < vintage.size ; i++) {
 		    for (int j = 0; j < vintage.size ; j++) {
 		    	boxes[i][j].setIcon(null);
+		    	boxes[i][j].setIcon(pictures[gameStatus[i][j]]);
 		    	if (gameWin[i][j]) 
 		    		boxes[i][j].setBackground(new Color(64, 64, 64)); 
-		    	boxes[i][j].setIcon(pictures[gameStatus[i][j]]);
 		    }
 		}
 		panelGamer1.remove(score1);
