@@ -11,6 +11,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 /**
  * VintageGUI class represents the graphical user interface for the Vintage game.
  * It extends the JFrame class and provides a window to interact with the game.
+ * @author Mateo Forero, Juan Murcia
+ * @version 1.0
  */
 public class VintageGUI extends JFrame{
 
