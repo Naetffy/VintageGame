@@ -7,11 +7,17 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+
+/**
+ * VintageGUI class represents the graphical user interface for the Vintage game.
+ * It extends the JFrame class and provides a window to interact with the game.
+ */
 public class VintageGUI extends JFrame{
-	
-	private final Color backGroundColor = new Color(106, 90, 205);
-	private static final  Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	private static final int WIDTH = screenSize.width/2;
+
+    // Fields
+    private final Color backGroundColor = new Color(106, 90, 205);
+    private static final  Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private static final int WIDTH = screenSize.width/2;
     private static final int HIGH =  screenSize.height/2;
     private static final Dimension PREFERRED_DIMENSION =
                          new Dimension(WIDTH,HIGH);
@@ -25,11 +31,12 @@ public class VintageGUI extends JFrame{
     private JMenuItem menuSave;
     private JMenuItem menuClose;
     
-    //Pantalla principal
+    //Main screen
     private JPanel panelElements;
     private JPanel panelGamer1;
     private JLabel score1;
-    //Patlla tablero
+    
+    //Game board
     private JButton startButton;
     private JPanel panelBoard;
     private JButton[][] boxes;
@@ -39,19 +46,32 @@ public class VintageGUI extends JFrame{
     
     private JPanel panelGamer2;
     private JLabel score2;
-    
-	private Vintage vintage;
-	
+    private Vintage vintage;
+
+
+	/**
+     	* Constructor for VintageGUI class. Initializes the GUI components.
+     	*/
 	private VintageGUI() {
 		prepareElements();				//Vista
 		prepareActions();				//Controlador
 	}
+
+
 	
+	/**
+        * The entry point for the VintageGUI application.
+        * @param args Command-line arguments (not used in this application).
+        */
 	public static void main(String[] args) {
 		VintageGUI gui =  new VintageGUI(); 
 		gui.setVisible(true);
 	}
-	
+
+
+	/**
+        * Prepares the initial state of the GUI, including the frame title, size, menu bar, and game board.
+        */
 	private void prepareElements() {
 		setTitle("Vintage");	
         setSize(PREFERRED_DIMENSION);
@@ -89,6 +109,10 @@ public class VintageGUI extends JFrame{
 		
 	}
 	
+	/**
+        * Prepares the menu bar with menu items and sets up their action listeners.
+        * @return JMenuBar object containing the prepared menu.
+        */
 	private void prepareElementsBoard() {
 		JPanel board =  new JPanel();
 		board.setLayout(new BorderLayout());
@@ -97,6 +121,11 @@ public class VintageGUI extends JFrame{
 		panelElements = board;
 		getContentPane().add(panelElements);
 	}
+
+
+	/**
+        * Prepares the initial game board layout for the start of a new game.
+        */
 	private void prepareElementsBoardInGame() {
 		getContentPane().removeAll();
 		JPanel board =  new JPanel();
@@ -111,6 +140,10 @@ public class VintageGUI extends JFrame{
 		getContentPane().add(panelElements);
 	}
 	
+	
+	/**
+        * Prepares the game board layout during an active game.
+        */
 	private void prepareElementsBoardStart() {
 		panelBoard = new JPanel();
 		panelBoard.setBorder(new CompoundBorder(new EmptyBorder(WIDTH/64,WIDTH/32,WIDTH/64,WIDTH/32),
@@ -118,7 +151,11 @@ public class VintageGUI extends JFrame{
 		startButton =new JButton("Start new game");
 		panelBoard.add(startButton);
 	}
-	
+
+
+ 	/**
+     	* Prepares the game board layout during an active game.
+     	*/
 	private void prepareElementsBoardGame() {
 		panelBoard.removeAll();
 		CompoundBorder border = new CompoundBorder(new EmptyBorder(0,WIDTH/4,0,WIDTH/4),
@@ -146,6 +183,12 @@ public class VintageGUI extends JFrame{
 		panelBoard.setBackground(backGroundColor);
 	}
 	
+	
+	
+	
+	/**
+     	* Prepares the game board layout for player one during an active game.
+     	*/
 	private void prepareElementsBoardGameGamer1() {
 		panelGamer1.removeAll();
 		panelGamer1.setBorder(new CompoundBorder(new EmptyBorder(WIDTH/64,WIDTH/32,WIDTH/64,WIDTH/32),
@@ -156,6 +199,10 @@ public class VintageGUI extends JFrame{
 		panelGamer1.setBackground(backGroundColor);
 	}
 	
+	
+	/**
+     	* Prepares the game board layout for player two during an active game.
+     	*/
 	private void prepareElementsBoardGameGamer2() {
 		panelGamer2.removeAll();
 		panelGamer2.setBorder(new CompoundBorder(new EmptyBorder(0,WIDTH/32,WIDTH/64,WIDTH/32),
@@ -166,6 +213,10 @@ public class VintageGUI extends JFrame{
 		panelGamer2.setBackground(backGroundColor);
 	}
 
+
+	/**
+     	* Prepares the actions for menu items, start button, and game board buttons.
+     	*/
 	private void prepareActions() {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		 addWindowListener(new WindowAdapter() {
@@ -177,6 +228,10 @@ public class VintageGUI extends JFrame{
 		 start();
 	}
 	
+	
+	/**
+     	* Prepares the action listeners for menu items, such as creating a new game, saving, opening, and closing the application.
+     	*/
 	private void prepareMenuActions() {
 		menuNew.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
@@ -231,6 +286,10 @@ public class VintageGUI extends JFrame{
 		 });
 	}
 	
+	
+	/**
+     	* Refreshes the GUI components to reflect the current state of the game.
+     	*/
 	private void refresh() {
 		prepareElementsBoardGameGamer1();
 		prepareElementsBoardGameGamer2();
@@ -242,6 +301,10 @@ public class VintageGUI extends JFrame{
 		});
 	}
 	
+	
+	/**
+     	* Initiates the start button action to begin a new game.
+     	*/
 	private void start() {
 		startButton.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
@@ -260,7 +323,11 @@ public class VintageGUI extends JFrame{
 		 });
 		
 	}
-	
+
+
+	/**
+     	* Prepares the action listeners for the game board buttons.
+    	 */
 	private void prepareBoardGameActions() {
 		if (vintage == null)return;
 		for (int i = 0; i < vintage.size ; i++) {
@@ -296,6 +363,11 @@ public class VintageGUI extends JFrame{
 		}
 		
 	}
+
+
+	/**
+     	* Updates the game board GUI based on the current state of the game.
+    	*/
 	private void updateBoard() {
 		/*
 		 * while (!vintage.nextStates.isEmpty()) {
@@ -337,6 +409,9 @@ public class VintageGUI extends JFrame{
 		panelGamer2.add(score2);
 	}
 	
+	/**
+     	* Closes the application, prompting the user for confirmation.
+     	*/
 	private void closeApp() {
 		int yesNo = JOptionPane.showOptionDialog(null,"Are you sure you want exit?","Warning",
 					JOptionPane.YES_NO_OPTION,
@@ -349,6 +424,11 @@ public class VintageGUI extends JFrame{
 		}
 	}
 
+	/**
+     	* Recalculates the size of the gem pictures based on the specified width and height.
+     	* @param w The new width for the gem pictures.
+     	* @param h The new height for the gem pictures.
+     	*/
 	private void recalculatePicturesSize(int w, int h) {
 		for(int i = 0; i < Vintage.numGems;i++) {
 			Image image = pictures[i].getImage();
