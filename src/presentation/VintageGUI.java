@@ -16,7 +16,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class VintageGUI extends JFrame{
     // Fields
-    private final Color backGroundColor = new Color(106, 90, 205);
+    private Color backGroundColor = new Color(106, 90, 205);
     private static final  Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static final int WIDTH = screenSize.width/2;
     private static final int HIGH =  screenSize.height/2;
@@ -85,6 +85,8 @@ public class VintageGUI extends JFrame{
 			String name = i+".png";
 			pictures[i] = new ImageIcon("src/resources/images/"+name);
 		}
+		ImageIcon img = new ImageIcon("src/resources/images/1.png");
+		setIconImage(img.getImage());
         setJMenuBar(prepareElementsMenu());   
         prepareElementsBoard();
 	}
@@ -228,6 +230,7 @@ public class VintageGUI extends JFrame{
 				 closeApp();
 			 }
 		 });
+		 addComponentListener(new ResizeListener());
 		 prepareMenuActions();
 		 start();
 	}
@@ -469,6 +472,16 @@ public class VintageGUI extends JFrame{
 			pictures[i] = new ImageIcon(newImage);
 		}
 	}
+	
+	private class ResizeListener extends ComponentAdapter {
+        @Override
+        public void componentResized(ComponentEvent e) {
+            if (panelGamer1!=null) {
+            	prepareElementsBoardInGame();
+            	refresh();
+            }
+        }
+    }
 }
 	
 	
